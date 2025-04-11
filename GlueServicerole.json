@@ -1,0 +1,161 @@
+{
+	"jobConfig": {
+		"name": "Projectrole",
+		"description": "",
+		"role": "arn:aws:iam::034362033818:role/GlueServiceRole",
+		"command": "glueetl",
+		"version": "4.0",
+		"runtime": null,
+		"workerType": "G.1X",
+		"numberOfWorkers": 10,
+		"maxCapacity": 10,
+		"maxRetries": 0,
+		"timeout": 2880,
+		"maxConcurrentRuns": 1,
+		"security": "none",
+		"scriptName": ".py",
+		"scriptLocation": "s3://ghg-methane/scripts/",
+		"language": "python-3",
+		"spark": true,
+		"sparkConfiguration": "standard",
+		"jobParameters": [],
+		"tags": [],
+		"jobMode": "VISUAL_MODE",
+		"createdOn": "2024-08-11T02:52:31.000Z",
+		"developerMode": false,
+		"connectionsList": [],
+		"temporaryDirectory": "s3://ghg-methane/scripts/",
+		"logging": true,
+		"glueHiveMetastore": true,
+		"etlAutoTuning": false,
+		"metrics": true,
+		"observabilityMetrics": true,
+		"bookmark": "job-bookmark-disable",
+		"sparkPath": "s3://aws-glue-assets-034362033818-us-east-2/sparkHistoryLogs/",
+		"flexExecution": false,
+		"minFlexWorkers": null,
+		"maintenanceWindow": null
+	},
+	"dag": {
+		"node-1723343702984": {
+			"nodeId": "node-1723343702984",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [],
+			"name": "Extracting data",
+			"generatedNodeName": "Extractingdata_node1723343702984",
+			"classification": "DataSource",
+			"type": "S3",
+			"isCatalog": true,
+			"database": "ghg methane db",
+			"table": "raw_data",
+			"partitionPredicate": "",
+			"additionalOptions": {
+				"boundedSize": null,
+				"boundedFiles": null,
+				"boundedOption": null
+			},
+			"calculatedType": "CatalogS3DataSource",
+			"codeGenVersion": 2
+		},
+		"node-1723343714761": {
+			"nodeId": "node-1723343714761",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1723343702984"
+			],
+			"name": "Change Schema",
+			"generatedNodeName": "ChangeSchema_node1723343714761",
+			"classification": "Transform",
+			"type": "ApplyMapping",
+			"mapping": [
+				{
+					"toKey": "entity",
+					"fromPath": [
+						"entity"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "code",
+					"fromPath": [
+						"code"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "year",
+					"fromPath": [
+						"year"
+					],
+					"toType": "long",
+					"fromType": "long",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "ghg",
+					"fromPath": [
+						"ghg"
+					],
+					"toType": "double",
+					"fromType": "double",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "methane",
+					"fromPath": [
+						"methane"
+					],
+					"toType": "double",
+					"fromType": "double",
+					"dropped": false,
+					"children": null
+				}
+			],
+			"parentsValid": true,
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1723343731694": {
+			"nodeId": "node-1723343731694",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1723343714761"
+			],
+			"name": "Load Processed data",
+			"generatedNodeName": "LoadProcesseddata_node1723343731694",
+			"classification": "DataSink",
+			"type": "S3",
+			"streamingBatchInterval": 100,
+			"format": "csv",
+			"compression": "none",
+			"path": "s3://ghg-methane/processed_data/",
+			"partitionKeys": [],
+			"schemaChangePolicy": {
+				"enableUpdateCatalog": true,
+				"updateBehavior": "UPDATE_IN_DATABASE",
+				"database": "ghg methane db",
+				"table": "ghg glue table"
+			},
+			"updateCatalogOptions": "schemaAndPartitions",
+			"autoDataQuality": {
+				"isEnabled": false,
+				"evaluationContext": null
+			},
+			"calculatedType": "",
+			"codeGenVersion": 2
+		}
+	},
+	"hasBeenSaved": false,
+	"usageProfileName": null
+}
